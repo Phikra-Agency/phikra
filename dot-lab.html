@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#272727">
+    <meta name="robots" content="noindex">
+    <title>Phikra — dot lab</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --phikra-bg: #272727;
+            --phikra-text: #e8ddd8;
+            --phikra-red: #e50d4a;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --font-display: "Syne", system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: var(--font-display);
+            background: var(--phikra-bg);
+            color: var(--phikra-text);
+            padding: clamp(1.25rem, 4vw, 2.5rem);
+        }
+
+        a {
+            color: rgba(255, 172, 190, 0.9);
+        }
+
+        header {
+            max-width: 56rem;
+            margin: 0 auto 2rem;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: clamp(1.35rem, 3vw, 1.75rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            font-size: 0.85rem;
+            color: rgba(232, 221, 216, 0.55);
+        }
+
+        .strip {
+            max-width: 56rem;
+            margin: 0 auto 1.75rem;
+            border: 1px solid rgba(232, 221, 216, 0.1);
+            background: rgba(18, 18, 18, 0.35);
+            padding: 1.1rem 1.1rem 1.25rem;
+        }
+
+        .strip h2 {
+            margin: 0 0 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.55);
+        }
+
+        .frames {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 0.55rem;
+        }
+
+        @media (max-width: 640px) {
+            .frames {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .frame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .frame__stage {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(ellipse 70% 60% at 50% 55%, rgba(229, 13, 74, 0.1), transparent 70%);
+        }
+
+        .frame__label {
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.45);
+        }
+
+        @property --wipe {
+            syntax: "<percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        .dot {
+            display: block;
+            width: min(4.6rem, 18vw);
+            height: auto;
+            aspect-ratio: 101 / 116;
+            color: var(--phikra-red);
+            overflow: visible;
+            filter:
+                drop-shadow(0 0 8px rgba(255, 130, 170, 0.4)),
+                drop-shadow(0 0 16px rgba(229, 13, 74, 0.22));
+        }
+
+        .dot__body {
+            fill: currentColor;
+        }
+
+        .dot__spine {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            opacity: 0;
+        }
+
+        /* hard edge wipe */
+        .dot--hard {
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--wipe),
+                transparent var(--wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--wipe),
+                transparent var(--wipe)
+            );
+        }
+
+        /* soft leading edge */
+        .dot--soft {
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 12%)),
+                transparent var(--wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 12%)),
+                transparent var(--wipe)
+            );
+        }
+
+        /* press: origin + slight scale at contact */
+        .dot--press {
+            transform-origin: 28% 22%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 10%)),
+                transparent var(--wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 10%)),
+                transparent var(--wipe)
+            );
+        }
+
+        .dot--press.is-contact {
+            transform: scale(0.94);
+        }
+
+        .dot--press.is-settle {
+            transform: scale(0.97);
+        }
+
+        /* spine then flood */
+        .dot--spine .dot__body {
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 10%)),
+                transparent var(--wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 max(0%, calc(var(--wipe) - 10%)),
+                transparent var(--wipe)
+            );
+        }
+
+        .dot--spine[data-spine="0"] .dot__spine {
+            stroke-dashoffset: 1;
+            opacity: 0;
+        }
+
+        .dot--spine[data-spine="0.35"] .dot__spine {
+            stroke-dashoffset: 0.65;
+            opacity: 0.95;
+        }
+
+        .dot--spine[data-spine="0.7"] .dot__spine {
+            stroke-dashoffset: 0.3;
+            opacity: 1;
+        }
+
+        .dot--spine[data-spine="1"] .dot__spine {
+            stroke-dashoffset: 0;
+            opacity: 1;
+        }
+
+        .dot--spine[data-spine="fade"] .dot__spine {
+            stroke-dashoffset: 0;
+            opacity: 0.3;
+        }
+
+        .dot--spine[data-spine="gone"] .dot__spine {
+            stroke-dashoffset: 0;
+            opacity: 0;
+        }
+
+        .live {
+            max-width: 56rem;
+            margin: 0 auto 1.75rem;
+            border: 1px solid rgba(232, 221, 216, 0.1);
+            background: rgba(18, 18, 18, 0.35);
+            padding: 1.1rem 1.1rem 1.25rem;
+        }
+
+        .live h2 {
+            margin: 0 0 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.55);
+        }
+
+        .live__stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 12rem;
+            background:
+                radial-gradient(ellipse 70% 60% at 50% 55%, rgba(229, 13, 74, 0.1), transparent 70%);
+        }
+
+        .live .dot {
+            width: min(8.5rem, 36vw);
+            animation: wipe-hard 2s var(--ease-out) infinite both;
+        }
+
+        @keyframes wipe-hard {
+            0% {
+                --wipe: 0%;
+                opacity: 1;
+            }
+            42%,
+            68% {
+                --wipe: 100%;
+                opacity: 1;
+            }
+            88%,
+            100% {
+                --wipe: 100%;
+                opacity: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .live .dot {
+                animation: none;
+                opacity: 0.92;
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dot lab</h1>
+        <nav class="nav"><a href="./animation-lab.html">mark lab</a> · <a href="./index.html">site</a></nav>
+    </header>
+
+    <section class="live" aria-labelledby="live-hard">
+        <h2 id="live-hard">Live · hard chisel</h2>
+        <div class="live__stage">
+            <svg class="dot dot--hard" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+            </svg>
+        </div>
+    </section>
+
+    <section class="strip" aria-labelledby="frames-hard">
+        <h2 id="frames-hard">A · hard chisel</h2>
+        <div class="frames">
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">0</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 18%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">contact</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 38%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">drag</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 62%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">mid</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 82%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">near</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--hard" style="--wipe: 100%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">full</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="strip" aria-labelledby="frames-soft">
+        <h2 id="frames-soft">B · soft ink</h2>
+        <div class="frames">
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">0</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 18%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">contact</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 38%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">bleed</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 62%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">mid</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 82%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">near</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--soft" style="--wipe: 100%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">full</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="strip" aria-labelledby="frames-spine">
+        <h2 id="frames-spine">C · spine then flood</h2>
+        <div class="frames">
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="0" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">0</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="0.35" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">spine</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="1" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">line</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="fade" style="--wipe: 35%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">flood</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="gone" style="--wipe: 70%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">mid</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--spine" data-spine="gone" style="--wipe: 100%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__spine" pathLength="1" d="M22 28 C 40 48, 58 72, 78 98"/>
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">full</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="strip" aria-labelledby="frames-press">
+        <h2 id="frames-press">D · press then drag</h2>
+        <div class="frames">
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press is-contact" style="--wipe: 0%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">press</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press is-settle" style="--wipe: 12%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">land</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press" style="--wipe: 38%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">drag</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press" style="--wipe: 62%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">mid</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press" style="--wipe: 82%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">near</span>
+            </div>
+            <div class="frame">
+                <div class="frame__stage">
+                    <svg class="dot dot--press" style="--wipe: 100%" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="dot__body" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </div>
+                <span class="frame__label">full</span>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

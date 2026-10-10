@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#272727">
-    <title>Phikra - We think it … until You make it.</title>
+    <title>Phikra - We think … You lead.</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +19,8 @@
             --phikra-text-bright: #e8ddd8;
             --phikra-red: #e50d4a;
             --phikra-burgundy: #4c1626;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
             --font-display: "Syne", system-ui, -apple-system, sans-serif;
             --font-body: "Syne", system-ui, -apple-system, Segoe UI, sans-serif;
             --font-tagline: "Syne", system-ui, -apple-system, Segoe UI, sans-serif;
@@ -655,112 +657,73 @@
             margin-inline: clamp(0.08em, 0.45vw, 0.22em);
         }
 
-        .tagline .ascii-typing {
-            --ascii-typing-period: 0.88s;
-            --ascii-typing-dots: 3;
+        .tagline .mark-thinking {
+            --mark-period: 1.05s;
+            --mark-count: 3;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
             display: inline-flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             align-self: center;
-            gap: clamp(0.03em, 0.22vw, 0.08em);
+            gap: clamp(0.06em, 0.28vw, 0.14em);
             margin: 0;
             vertical-align: middle;
             line-height: 0;
-        }
-
-        .ascii-typing__dot {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            animation: ascii-typing-bounce var(--ascii-typing-period, 0.88s) infinite ease-in-out both;
-            transform-origin: center bottom;
-        }
-
-        .ascii-typing__dot:nth-child(1) {
-            animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (1 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
-            );
-        }
-
-        .ascii-typing__dot:nth-child(2) {
-            animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (2 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
-            );
-        }
-
-        .ascii-typing__dot:nth-child(3) {
-            animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (3 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
-            );
-        }
-
-        .ascii-typing__glyph {
-            display: block;
-            margin: 0;
-            padding: 0;
-            min-width: clamp(3.5ch, 4.2em, 5ch);
-            min-height: calc(3 * 0.74em);
-            font-family: ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
-            font-size: clamp(0.28rem, 0.72em, 0.54rem);
-            font-weight: 600;
-            line-height: 0.75;
-            letter-spacing: 0;
             color: var(--phikra-red);
-            white-space: pre;
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-            animation: ascii-typing-glow var(--ascii-typing-period, 0.88s) infinite ease-in-out both;
         }
 
-        .ascii-typing__dot:nth-child(1) .ascii-typing__glyph {
+        .mark-thinking__petal {
+            display: block;
+            width: clamp(0.55rem, 0.72em, 0.95rem);
+            height: auto;
+            aspect-ratio: 101 / 116;
+            flex: 0 0 auto;
+            transform-origin: 50% 88%;
+            will-change: transform, opacity;
+            animation: mark-thinking-dance var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-in-out);
+            filter:
+                drop-shadow(0 0 6px rgba(255, 130, 170, 0.42)),
+                drop-shadow(0 0 14px rgba(229, 13, 74, 0.22));
+        }
+
+        .mark-thinking__petal:nth-child(1) {
             animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (1 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
+                var(--mark-period) * (1 - var(--mark-count)) / var(--mark-count)
             );
         }
 
-        .ascii-typing__dot:nth-child(2) .ascii-typing__glyph {
+        .mark-thinking__petal:nth-child(2) {
             animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (2 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
+                var(--mark-period) * (2 - var(--mark-count)) / var(--mark-count)
             );
         }
 
-        .ascii-typing__dot:nth-child(3) .ascii-typing__glyph {
+        .mark-thinking__petal:nth-child(3) {
             animation-delay: calc(
-                var(--ascii-typing-period, 0.88s) * (3 - var(--ascii-typing-dots, 3)) /
-                    var(--ascii-typing-dots, 3)
+                var(--mark-period) * (3 - var(--mark-count)) / var(--mark-count)
             );
         }
 
-        @keyframes ascii-typing-glow {
+        /* fill (opacity) + pop (scale overshoot) + float (lift) + idle loop */
+        @keyframes mark-thinking-dance {
             0%,
-            80%,
             100% {
-                text-shadow:
-                    0 0 6px rgba(255, 130, 170, 0.38),
-                    0 0 14px rgba(229, 13, 74, 0.22),
-                    0 0 22px rgba(76, 22, 38, 0.12);
+                opacity: 0.22;
+                transform: translate3d(0, 0, 0) scale(0.92);
             }
-            40% {
-                text-shadow:
-                    0 0 14px rgba(255, 130, 170, 0.9),
-                    0 0 26px rgba(229, 13, 74, 0.55),
-                    0 0 36px rgba(76, 22, 38, 0.35);
+            28% {
+                opacity: 1;
+                transform: translate3d(0, -0.42em, 0) scale(1.08);
             }
-        }
-
-        @keyframes ascii-typing-bounce {
-            0%,
-            80%,
-            100% {
-                transform: translate3d(0, 0, 0);
+            42% {
+                opacity: 1;
+                transform: translate3d(0, -0.18em, 0) scale(1);
             }
-            40% {
-                transform: translate3d(0, -7px, 0);
+            68% {
+                opacity: 0.55;
+                transform: translate3d(0, 0, 0) scale(0.96);
             }
         }
 
@@ -1356,16 +1319,10 @@
                 display: none !important;
             }
 
-            .ascii-typing__dot {
+            .mark-thinking__petal {
                 animation: none;
-            }
-
-            .ascii-typing__glyph {
-                animation: none;
-                text-shadow:
-                    0 0 6px rgba(255, 130, 170, 0.38),
-                    0 0 14px rgba(229, 13, 74, 0.22),
-                    0 0 22px rgba(76, 22, 38, 0.12);
+                opacity: 0.92;
+                transform: none;
             }
         }
     </style>
@@ -1445,130 +1402,130 @@
                         aria-hidden="false"
                     >
                         <p class="tagline">
-                            We think it <span class="tagline-thinking"
+                            We think <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            until <span class="tagline-you" data-text="You">You</span> make it.
+                            <span class="tagline-you" data-text="You">You</span> lead.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="fr" aria-hidden="true">
                         <p class="tagline">
-                            Nous y pensons <span class="tagline-thinking"
+                            Nous pensons <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            jusqu'à ce que <span class="tagline-you" data-text="Vous">Vous</span> le concrétisiez.
+                            <span class="tagline-you" data-text="Vous">Vous</span> menez.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="es" aria-hidden="true">
                         <p class="tagline">
-                            Lo pensamos <span class="tagline-thinking"
+                            Pensamos <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            hasta que <span class="tagline-you" data-text="Tú">Tú</span> lo hagas.
+                            <span class="tagline-you" data-text="Tú">Tú</span> lideras.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="de" aria-hidden="true">
                         <p class="tagline">
-                            Wir denken daran <span class="tagline-thinking"
+                            Wir denken <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            bis <span class="tagline-you" data-text="Ihr">Ihr</span> es macht.
+                            <span class="tagline-you" data-text="Ihr">Ihr</span> führt.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="it" aria-hidden="true">
                         <p class="tagline">
-                            Ci pensiamo <span class="tagline-thinking"
+                            Pensiamo <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            finché <span class="tagline-you" data-text="Tu">Tu</span> non lo concretizzi.
+                            <span class="tagline-you" data-text="Tu">Tu</span> guidi.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="pt" aria-hidden="true">
                         <p class="tagline">
-                            Pensamos nisso <span class="tagline-thinking"
+                            Pensamos <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            até <span class="tagline-you" data-text="Vocês">Vocês</span> o concretizarem.
+                            <span class="tagline-you" data-text="Vocês">Vocês</span> lideram.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="nl" aria-hidden="true">
                         <p class="tagline">
-                            We denken erover na <span class="tagline-thinking"
+                            Wij denken <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            tot <span class="tagline-you" data-text="Jullie">Jullie</span> het waarmaken.
+                            <span class="tagline-you" data-text="Jullie">Jullie</span> leiden.
                         </p>
                     </section>
                     <section class="lang-showcase__panel" lang="ja" aria-hidden="true">
                         <p class="tagline">
-                            それを考えています <span class="tagline-thinking"
+                            考える <span class="tagline-thinking"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            <span class="tagline-you" data-text="あなた">あなた</span>が形にするまで。
+                            <span class="tagline-you" data-text="あなた">あなた</span>が導く。
                         </p>
                     </section>
                     <section
@@ -1587,18 +1544,18 @@
                         aria-hidden="true"
                     >
                         <p class="tagline">
-                            كنفكرو فيه <span class="tagline-thinking" dir="ltr"
+                            كنفكرو <span class="tagline-thinking" dir="ltr"
                                 ><span class="visually-hidden"> … </span
-                                ><span class="ascii-typing" aria-hidden="true"
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
-                                    ><span class="ascii-typing__dot"
-                                        ><span class="ascii-typing__glyph" aria-hidden="true"></span></span
+                                ><span class="mark-thinking" aria-hidden="true"
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
+                                    ><svg class="mark-thinking__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"
+                                        ><path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/></svg
                                 ></span
                             ></span>
-                            حتى <span class="tagline-you" data-text="نتوما">نتوما</span> تصوّبوه.
+                            <span class="tagline-you" data-text="نتوما">نتوما</span> تقودو.
                         </p>
                     </section>
                 </div>

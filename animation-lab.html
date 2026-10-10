@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#272727">
+    <meta name="robots" content="noindex">
+    <title>Phikra — animation lab</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --phikra-bg: #272727;
+            --phikra-text: #e8ddd8;
+            --phikra-red: #e50d4a;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+            --font-display: "Syne", system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: var(--font-display);
+            background: var(--phikra-bg);
+            color: var(--phikra-text);
+            padding: clamp(1.25rem, 4vw, 2.5rem);
+        }
+
+        a {
+            color: rgba(255, 172, 190, 0.9);
+        }
+
+        header {
+            max-width: 56rem;
+            margin: 0 auto 2rem;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: clamp(1.35rem, 3vw, 1.75rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            font-size: 0.85rem;
+            color: rgba(232, 221, 216, 0.55);
+        }
+
+        .grid {
+            max-width: 56rem;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 720px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            border: 1px solid rgba(232, 221, 216, 0.1);
+            background: rgba(18, 18, 18, 0.35);
+            padding: 1.25rem 1.25rem 1.5rem;
+        }
+
+        .card h2 {
+            margin: 0 0 1rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.55);
+        }
+
+        .stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 11rem;
+            background:
+                radial-gradient(ellipse 70% 60% at 50% 55%, rgba(229, 13, 74, 0.08), transparent 70%);
+        }
+
+        .tagline-preview {
+            margin: 1rem 0 0;
+            text-align: center;
+            font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+            font-weight: 600;
+            line-height: 1.35;
+            color: var(--phikra-text);
+        }
+
+        .tagline-preview .you {
+            color: var(--phikra-red);
+            text-shadow:
+                0 0 8px rgba(255, 130, 170, 0.48),
+                0 0 18px rgba(229, 13, 74, 0.3);
+        }
+
+        /* mark */
+        .mark {
+            --mark-count: 3;
+            display: inline-flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0.35rem;
+            color: var(--phikra-red);
+            line-height: 0;
+            vertical-align: middle;
+        }
+
+        .mark__petal {
+            display: block;
+            width: 2.75rem;
+            height: auto;
+            aspect-ratio: 101 / 116;
+            flex: 0 0 auto;
+            transform-origin: 50% 88%;
+            will-change: transform, opacity, clip-path;
+            filter:
+                drop-shadow(0 0 8px rgba(255, 130, 170, 0.42)),
+                drop-shadow(0 0 18px rgba(229, 13, 74, 0.22));
+        }
+
+        .mark--lg .mark__petal {
+            width: 4.25rem;
+        }
+
+        /* A */
+        .mark--dance {
+            --mark-period: 1.05s;
+        }
+
+        .mark--dance .mark__petal {
+            animation: mark-dance var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-in-out);
+        }
+
+        .mark--dance .mark__petal:nth-child(1) {
+            animation-delay: calc(var(--mark-period) * (1 - var(--mark-count)) / var(--mark-count));
+        }
+
+        .mark--dance .mark__petal:nth-child(2) {
+            animation-delay: calc(var(--mark-period) * (2 - var(--mark-count)) / var(--mark-count));
+        }
+
+        .mark--dance .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--mark-period) * (3 - var(--mark-count)) / var(--mark-count));
+        }
+
+        @keyframes mark-dance {
+            0%,
+            100% {
+                opacity: 0.22;
+                transform: translate3d(0, 0, 0) scale(0.92);
+            }
+            28% {
+                opacity: 1;
+                transform: translate3d(0, -0.42em, 0) scale(1.08);
+            }
+            42% {
+                opacity: 1;
+                transform: translate3d(0, -0.18em, 0) scale(1);
+            }
+            68% {
+                opacity: 0.55;
+                transform: translate3d(0, 0, 0) scale(0.96);
+            }
+        }
+
+        /* B */
+        .mark--fill {
+            --mark-period: 1.4s;
+            --stagger: 70ms;
+        }
+
+        .mark--fill .mark__petal {
+            animation: mark-fill-wave var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-out);
+        }
+
+        .mark--fill .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--fill .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--fill .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes mark-fill-wave {
+            0% {
+                opacity: 0.35;
+                clip-path: inset(100% 0 0 0);
+                transform: scale(0.94);
+            }
+            38% {
+                opacity: 1;
+                clip-path: inset(0 0 0 0);
+                transform: scale(1.06);
+            }
+            52% {
+                opacity: 1;
+                clip-path: inset(0 0 0 0);
+                transform: scale(1);
+            }
+            78%,
+            100% {
+                opacity: 0.4;
+                clip-path: inset(0 0 0 0);
+                transform: scale(0.97);
+            }
+        }
+
+        /* C */
+        .mark--pulse {
+            --mark-period: 1.2s;
+            --stagger: 50ms;
+        }
+
+        .mark--pulse .mark__petal {
+            animation: mark-pulse var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-in-out);
+        }
+
+        .mark--pulse .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--pulse .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--pulse .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes mark-pulse {
+            0%,
+            100% {
+                opacity: 0.35;
+                transform: scale(0.94);
+            }
+            45% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* D */
+        .mark--wiggle {
+            --mark-period: 1.15s;
+            --stagger: 60ms;
+        }
+
+        .mark--wiggle .mark__petal {
+            animation: mark-wiggle var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-in-out);
+        }
+
+        .mark--wiggle .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--wiggle .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--wiggle .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes mark-wiggle {
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: rotate(0deg) scale(0.96);
+            }
+            25% {
+                opacity: 1;
+                transform: rotate(-4deg) scale(1.04);
+            }
+            50% {
+                opacity: 1;
+                transform: rotate(4deg) scale(1.02);
+            }
+            75% {
+                opacity: 0.85;
+                transform: rotate(-2deg) scale(1);
+            }
+        }
+
+        /* E */
+        .mark--blink {
+            --mark-period: 0.9s;
+            --mark-count: 3;
+        }
+
+        .mark--blink .mark__petal {
+            animation: mark-blink var(--mark-period) infinite both;
+            animation-timing-function: steps(2, end);
+        }
+
+        .mark--blink .mark__petal:nth-child(1) {
+            animation-delay: calc(
+                var(--mark-period) * (1 - var(--mark-count)) / var(--mark-count)
+            );
+        }
+
+        .mark--blink .mark__petal:nth-child(2) {
+            animation-delay: calc(
+                var(--mark-period) * (2 - var(--mark-count)) / var(--mark-count)
+            );
+        }
+
+        .mark--blink .mark__petal:nth-child(3) {
+            animation-delay: calc(
+                var(--mark-period) * (3 - var(--mark-count)) / var(--mark-count)
+            );
+        }
+
+        @keyframes mark-blink {
+            0%,
+            49% {
+                opacity: 0.2;
+                transform: scale(0.95);
+            }
+            50%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* F */
+        @property --qalam-wipe {
+            syntax: "<percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        .mark--qalam {
+            --mark-period: 2.2s;
+            --stagger: 180ms;
+        }
+
+        .mark--qalam .mark__petal {
+            /* Hard edge travels 135deg (down-right) = flat nib swipe from top-left face.
+               Mask reveals the true SVG path — never reshapes the silhouette. */
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            animation: qalam-ink var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-out);
+        }
+
+        .mark--qalam .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--qalam .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--qalam .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes qalam-ink {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+            }
+            44%,
+            70% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            88%,
+            100% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* G */
+        .mark--qalam-slow {
+            --mark-period: 2.8s;
+            --stagger: 220ms;
+        }
+
+        .mark--qalam-slow .mark__petal {
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            animation: qalam-ink-slow var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-out);
+        }
+
+        .mark--qalam-slow .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--qalam-slow .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--qalam-slow .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes qalam-ink-slow {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+            }
+            52%,
+            78% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            90%,
+            100% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* H */
+        .mark--qalam-breath {
+            --mark-period: 2.0s;
+            --stagger: 80ms;
+        }
+
+        .mark--qalam-breath .mark__petal {
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            animation: qalam-ink-breath var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-out);
+        }
+
+        .mark--qalam-breath .mark__petal:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        .mark--qalam-breath .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--qalam-breath .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes qalam-ink-breath {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+            }
+            40%,
+            68% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            88%,
+            100% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* I */
+        .mark--qalam-rtl {
+            --mark-period: 2.2s;
+            --stagger: 180ms;
+        }
+
+        .mark--qalam-rtl .mark__petal {
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            animation: qalam-ink var(--mark-period) infinite both;
+            animation-timing-function: var(--ease-out);
+        }
+
+        .mark--qalam-rtl .mark__petal:nth-child(1) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        .mark--qalam-rtl .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--qalam-rtl .mark__petal:nth-child(3) {
+            animation-delay: 0ms;
+        }
+
+        /* J */
+        .card--wide {
+            grid-column: 1 / -1;
+        }
+
+        .stage--tagline {
+            min-height: 14rem;
+        }
+
+        .tagline-hero {
+            margin: 0;
+            font-size: clamp(1.6rem, 4.4vw, 2.6rem);
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--phikra-text);
+        }
+
+        .tagline-hero .mark__petal {
+            width: 0.62em;
+        }
+
+        .tagline-hero .mark {
+            gap: 0.14em;
+            margin-inline: 0.12em;
+        }
+
+        .mark--handoff {
+            --mark-period: 4.8s;
+            --stagger: 120ms;
+            --ease-sine: cubic-bezier(0.37, 0, 0.63, 1);
+        }
+
+        .mark--handoff .mark__petal {
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            translate: 0 var(--dance-y);
+            animation:
+                mark-handoff var(--mark-period) var(--ease-in-out) infinite both,
+                dance-y var(--mark-period) var(--ease-sine) infinite both;
+        }
+
+        @property --dance-y {
+            syntax: "<length-percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        /* Bouncing-dots bob (loading.dev): pure vertical sine, mostly above
+           the rest line with a small dip below, so no dot lands on a floor.
+           Keyframes sit only on peaks and troughs; easeInOutSine between them
+           keeps speed continuous. Two 672ms cycles; the 120ms stagger is
+           about a sixth of a cycle, matching the reference phase offset. */
+        @keyframes dance-y {
+            0%,
+            30% {
+                --dance-y: 0%;
+                animation-timing-function: var(--ease-sine);
+            }
+            33.5% {
+                --dance-y: -38%;
+            }
+            40.5% {
+                --dance-y: 12%;
+            }
+            47.5% {
+                --dance-y: -38%;
+            }
+            54.5% {
+                --dance-y: 12%;
+            }
+            58%,
+            100% {
+                --dance-y: 0%;
+            }
+        }
+
+        .mark--handoff .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark--handoff .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        /* write, think twice, lean toward "You", release */
+        @keyframes mark-handoff {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            14%,
+            30% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            58% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            86% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+                transform: translateX(0.14em);
+            }
+            /* reset only while invisible, so no half-dot flashes on loop */
+            88%,
+            100% {
+                --qalam-wipe: 0%;
+                opacity: 0;
+                transform: translateX(0);
+            }
+        }
+
+        .you--handoff {
+            position: relative;
+            display: inline-block;
+            text-shadow: none;
+        }
+
+        .you--handoff::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            color: transparent;
+            text-shadow:
+                0 0 10px rgba(255, 130, 170, 0.7),
+                0 0 26px rgba(229, 13, 74, 0.5);
+            opacity: 0.25;
+            pointer-events: none;
+            animation: you-handoff 4.8s var(--ease-in-out) infinite both;
+        }
+
+        @keyframes you-handoff {
+            0%,
+            62% {
+                opacity: 0.25;
+            }
+            76%,
+            88% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.25;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .you--handoff::after {
+                animation: none;
+                opacity: 0.6;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mark--handoff .mark__petal,
+            .mark--dance .mark__petal,
+            .mark--fill .mark__petal,
+            .mark--pulse .mark__petal,
+            .mark--wiggle .mark__petal,
+            .mark--blink .mark__petal,
+            .mark--qalam .mark__petal,
+            .mark--qalam-slow .mark__petal,
+            .mark--qalam-breath .mark__petal,
+            .mark--qalam-rtl .mark__petal {
+                animation: none;
+                opacity: 0.92;
+                transform: none;
+                clip-path: none;
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Animation lab</h1>
+        <nav class="nav"><a href="./index.html">site</a> · <a href="./dot-lab.html">dot lab</a></nav>
+    </header>
+
+    <div class="grid">
+        <section class="card" aria-labelledby="lab-a">
+            <h2 id="lab-a">A · dance</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--dance" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--dance" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-b">
+            <h2 id="lab-b">B · fill wave</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--fill" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--fill" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-c">
+            <h2 id="lab-c">C · pulse breathe</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--pulse" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--pulse" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-d">
+            <h2 id="lab-d">D · soft wiggle</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--wiggle" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--wiggle" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-e">
+            <h2 id="lab-e">E · stepped blink</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--blink" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--blink" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-f">
+            <h2 id="lab-f">F · qalam wipe</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--qalam" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--qalam" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-g">
+            <h2 id="lab-g">G · unhurried</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--qalam-slow" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--qalam-slow" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-h">
+            <h2 id="lab-h">H · one breath</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--qalam-breath" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--qalam-breath" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card" aria-labelledby="lab-i">
+            <h2 id="lab-i">I · rtl lift</h2>
+            <div class="stage">
+                <span class="mark mark--lg mark--qalam-rtl" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+            </div>
+            <p class="tagline-preview">
+                We think
+                <span class="mark mark--qalam-rtl" aria-hidden="true">
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                    <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false" style="width:0.85rem">
+                        <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                    </svg>
+                </span>
+                <span class="you">You</span> lead.
+            </p>
+        </section>
+
+        <section class="card card--wide" aria-labelledby="lab-j">
+            <h2 id="lab-j">J · think, then hand over</h2>
+            <div class="stage stage--tagline">
+                <p class="tagline-preview tagline-hero">
+                    We think
+                    <span class="mark mark--handoff" aria-hidden="true">
+                        <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                            <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                        </svg>
+                        <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                            <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                        </svg>
+                        <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                            <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+                        </svg>
+                    </span>
+                    <span class="you you--handoff" data-text="You">You</span> lead.
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
