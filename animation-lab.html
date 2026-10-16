@@ -747,6 +747,47 @@
                 mask-image: none;
             }
         }
+
+        .inspiration {
+            max-width: 56rem;
+            margin: 2rem auto 0;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(232, 221, 216, 0.1);
+        }
+
+        .inspiration__label {
+            margin: 0 0 0.55rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.42);
+        }
+
+        .inspiration__list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem 0.85rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .inspiration__list a {
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            color: rgba(255, 172, 190, 0.72);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .inspiration__list a:hover {
+                color: rgba(255, 172, 190, 0.95);
+                border-bottom-color: rgba(255, 172, 190, 0.35);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1065,5 +1106,19 @@
             </div>
         </section>
     </div>
+
+    <aside class="inspiration" aria-label="Agency inspiration">
+        <p class="inspiration__label">Inspiration</p>
+        <ul class="inspiration__list">
+            <li><a href="https://immersive-g.com/" target="_blank" rel="noopener noreferrer">Immersive Garden</a></li>
+            <li><a href="https://www.basicagency.com/" target="_blank" rel="noopener noreferrer">BASIC</a></li>
+            <li><a href="https://flabbergast.agency/" target="_blank" rel="noopener noreferrer">Flabbergast</a></li>
+            <li><a href="https://ribbit.dk/" target="_blank" rel="noopener noreferrer">Ribbit</a></li>
+            <li><a href="https://www.plus-ex.com/" target="_blank" rel="noopener noreferrer">Plus X</a></li>
+            <li><a href="https://madeinhaus.com/" target="_blank" rel="noopener noreferrer">Haus</a></li>
+            <li><a href="https://atoll.studio/" target="_blank" rel="noopener noreferrer">Atoll</a></li>
+            <li><a href="https://www.extract.studio/" target="_blank" rel="noopener noreferrer">Extract</a></li>
+        </ul>
+    </aside>
 </body>
 </html>

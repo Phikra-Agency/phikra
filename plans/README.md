@@ -27,7 +27,7 @@ Lab keeps A–I as alternatives; J stays marked as winner.
 | Atoll | https://atoll.studio/ |
 | Extract | https://www.extract.studio/ |
 
-Links also live on the site under Inspiration.
+Links live in `animation-lab.html` under Inspiration.
 
 ## Entry
 
