@@ -4,17 +4,33 @@
 | --- | --- | --- | --- |
 | 001 | Add three mark animation variants to the lab | LOW | DONE |
 | 002 | Add grounded qalam swipe variations to the lab | LOW | DONE |
+| 003 | Port winner J (think, then hand over) to site | LOW | DONE |
 
-## Execution order
+## Winner
 
-1. `001` done — A–E lab variants landed.
-2. Run `002-qalam-swipe-variations.md` next (lab only). Keeps F’s hard mask swipe; adds G/H/I timing dialects only.
-3. After human picks a winner among F–I (or earlier A–E), open a **new** plan to port into `index.html` `.mark-thinking`. Do not improvise that port inside 002.
+**J · think, then hand over** is the official Phikra brand motion on `index.html` (`.mark-thinking`).
 
-## Dependencies
+Sequence: qalam write → bouncing-dots think → hand over to **You**.
 
-- 002 assumes F’s mask wipe (`@property --qalam-wipe`, 135deg hard edge) already exists in `animation-lab.html`. If F is missing or reverted to clip-path/stroke, fix F first or stop per plan boundaries.
+Lab keeps A–I as alternatives; J stays marked as winner.
 
-## How to execute
+## Inspiration agencies (showcase)
 
-From chat: `/improve-animations execute 002` or hand `plans/002-qalam-swipe-variations.md` to any agent.
+| Agency | URL |
+| --- | --- |
+| Immersive Garden | https://immersive-g.com/ |
+| BASIC | https://www.basicagency.com/ |
+| Flabbergast | https://flabbergast.agency/ |
+| Ribbit | https://ribbit.dk/ |
+| Plus X | https://www.plus-ex.com/ |
+| Haus | https://madeinhaus.com/ |
+| Atoll | https://atoll.studio/ |
+| Extract | https://www.extract.studio/ |
+
+Links also live on the site under Inspiration.
+
+## Entry
+
+`loader.html` — standalone brand dots (one cycle), then fades into `index.html` site layer.
+
+First visit each session: `index.html` redirects to `loader.html` until `sessionStorage.phikra-loader === "done"`.

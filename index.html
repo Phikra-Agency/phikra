@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#272727">
     <title>Phikra - We think … You lead.</title>
+    <script>
+        /* First visit this session: brand dots on loader.html, then this layer */
+        (function () {
+            try {
+                if (sessionStorage.getItem("phikra-loader") !== "done") {
+                    window.location.replace("./loader.html");
+                }
+            } catch (e) {}
+        })();
+    </script>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,6 +88,17 @@
             color: var(--phikra-text);
             -webkit-font-smoothing: antialiased;
             position: relative;
+            opacity: 0;
+            animation: site-layer-in 0.7s var(--ease-out) forwards;
+        }
+
+        @keyframes site-layer-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .hero-title {
@@ -547,7 +568,9 @@
                 2px 0 14px rgba(229, 13, 74, 0.28),
                 0 0 22px rgba(255, 240, 235, 0.22),
                 0 1px 12px rgba(39, 39, 39, 0.45);
-            animation: cyber-chroma-flicker 3.6s steps(1, end) infinite;
+            animation:
+                cyber-chroma-flicker 3.6s steps(1, end) infinite,
+                mark-thinking-you 4.8s var(--ease-in-out) infinite both;
         }
 
         .lang-showcase__panel .tagline .tagline-you::before,
@@ -657,11 +680,23 @@
             margin-inline: clamp(0.08em, 0.45vw, 0.22em);
         }
 
+        @property --qalam-wipe {
+            syntax: "<percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        @property --dance-y {
+            syntax: "<length-percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
         .tagline .mark-thinking {
-            --mark-period: 1.05s;
+            --mark-period: 4.8s;
             --mark-count: 3;
-            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-            --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+            --stagger: 120ms;
+            --ease-sine: cubic-bezier(0.37, 0, 0.63, 1);
             display: inline-flex;
             align-items: flex-end;
             justify-content: center;
@@ -680,52 +715,110 @@
             aspect-ratio: 101 / 116;
             flex: 0 0 auto;
             transform-origin: 50% 88%;
-            will-change: transform, opacity;
-            animation: mark-thinking-dance var(--mark-period) infinite both;
-            animation-timing-function: var(--ease-in-out);
+            will-change: transform, opacity, translate;
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            translate: 0 var(--dance-y);
+            animation:
+                mark-thinking-handoff var(--mark-period) var(--ease-in-out) infinite both,
+                mark-thinking-bob var(--mark-period) var(--ease-sine) infinite both;
             filter:
                 drop-shadow(0 0 6px rgba(255, 130, 170, 0.42)),
                 drop-shadow(0 0 14px rgba(229, 13, 74, 0.22));
         }
 
-        .mark-thinking__petal:nth-child(1) {
-            animation-delay: calc(
-                var(--mark-period) * (1 - var(--mark-count)) / var(--mark-count)
-            );
-        }
-
         .mark-thinking__petal:nth-child(2) {
-            animation-delay: calc(
-                var(--mark-period) * (2 - var(--mark-count)) / var(--mark-count)
-            );
+            animation-delay: var(--stagger);
         }
 
         .mark-thinking__petal:nth-child(3) {
-            animation-delay: calc(
-                var(--mark-period) * (3 - var(--mark-count)) / var(--mark-count)
-            );
+            animation-delay: calc(var(--stagger) * 2);
         }
 
-        /* fill (opacity) + pop (scale overshoot) + float (lift) + idle loop */
-        @keyframes mark-thinking-dance {
-            0%,
+        /* Brand motion J: qalam write → bouncing-dots think → hand over to You */
+        @keyframes mark-thinking-handoff {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            14%,
+            30% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            58% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            86% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+                transform: translateX(0.14em);
+            }
+            88%,
             100% {
-                opacity: 0.22;
-                transform: translate3d(0, 0, 0) scale(0.92);
-            }
-            28% {
-                opacity: 1;
-                transform: translate3d(0, -0.42em, 0) scale(1.08);
-            }
-            42% {
-                opacity: 1;
-                transform: translate3d(0, -0.18em, 0) scale(1);
-            }
-            68% {
-                opacity: 0.55;
-                transform: translate3d(0, 0, 0) scale(0.96);
+                --qalam-wipe: 0%;
+                opacity: 0;
+                transform: translateX(0);
             }
         }
+
+        @keyframes mark-thinking-bob {
+            0%,
+            30% {
+                --dance-y: 0%;
+                animation-timing-function: var(--ease-sine);
+            }
+            33.5% {
+                --dance-y: -38%;
+            }
+            40.5% {
+                --dance-y: 12%;
+            }
+            47.5% {
+                --dance-y: -38%;
+            }
+            54.5% {
+                --dance-y: 12%;
+            }
+            58%,
+            100% {
+                --dance-y: 0%;
+            }
+        }
+
+        @keyframes mark-thinking-you {
+            0%,
+            62% {
+                filter: brightness(1);
+            }
+            76%,
+            88% {
+                filter:
+                    brightness(1.08)
+                    drop-shadow(0 0 10px rgba(255, 130, 170, 0.55))
+                    drop-shadow(0 0 22px rgba(229, 13, 74, 0.4));
+            }
+            100% {
+                filter: brightness(1);
+            }
+        }
+
 
         .content {
             position: relative;
@@ -1204,7 +1297,8 @@
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
-            opacity: 0.72;
+            opacity: 0;
+            transition: opacity 0.9s var(--ease-out);
             -webkit-mask-image: radial-gradient(
                 ellipse 125% 100% at 50% 45%,
                 #000 0%,
@@ -1221,16 +1315,36 @@
             );
         }
 
+        body.is-ready .ascii-bg {
+            opacity: 0.72;
+        }
+
         .grain-overlay {
             position: fixed;
             inset: 0;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.26;
+            opacity: 0;
+            transition: opacity 0.9s var(--ease-out);
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 120px 120px;
             mix-blend-mode: overlay;
+        }
+
+        body.is-ready .grain-overlay {
+            opacity: 0.26;
+        }
+
+        .quote-marquee,
+        .ascii-snake {
+            opacity: 0;
+            transition: opacity 0.9s var(--ease-out);
+        }
+
+        body.is-ready .quote-marquee,
+        body.is-ready .ascii-snake {
+            opacity: 1;
         }
 
         ::selection {
@@ -1256,12 +1370,29 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .grain-overlay {
+            .grain-overlay,
+            body.is-ready .grain-overlay {
                 opacity: 0.14;
+                transition: none;
             }
 
-            .ascii-bg {
+            .ascii-bg,
+            body.is-ready .ascii-bg {
                 opacity: 0.22;
+                transition: none;
+            }
+
+            .quote-marquee,
+            .ascii-snake,
+            body.is-ready .quote-marquee,
+            body.is-ready .ascii-snake {
+                opacity: 1;
+                transition: none;
+            }
+
+            body {
+                animation: none;
+                opacity: 1;
             }
 
             .ascii-stage {
@@ -1323,6 +1454,56 @@
                 animation: none;
                 opacity: 0.92;
                 transform: none;
+                translate: none;
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+
+            .lang-showcase__panel .tagline .tagline-you {
+                animation: none;
+                filter: none;
+            }
+        }
+
+        .inspiration {
+            margin: 1.75rem auto 0;
+            max-width: 28rem;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        .inspiration__label {
+            margin: 0 0 0.55rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(232, 221, 216, 0.42);
+        }
+
+        .inspiration__list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.35rem 0.85rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .inspiration__list a {
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            color: rgba(255, 172, 190, 0.72);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .inspiration__list a:hover {
+                color: rgba(255, 172, 190, 0.95);
+                border-bottom-color: rgba(255, 172, 190, 0.35);
             }
         }
     </style>
@@ -1616,6 +1797,20 @@
                     </svg>
                 </a>
             </nav>
+
+            <aside class="inspiration" aria-label="Agency inspiration">
+                <p class="inspiration__label">Inspiration</p>
+                <ul class="inspiration__list">
+                    <li><a href="https://immersive-g.com/" target="_blank" rel="noopener noreferrer">Immersive Garden</a></li>
+                    <li><a href="https://www.basicagency.com/" target="_blank" rel="noopener noreferrer">BASIC</a></li>
+                    <li><a href="https://flabbergast.agency/" target="_blank" rel="noopener noreferrer">Flabbergast</a></li>
+                    <li><a href="https://ribbit.dk/" target="_blank" rel="noopener noreferrer">Ribbit</a></li>
+                    <li><a href="https://www.plus-ex.com/" target="_blank" rel="noopener noreferrer">Plus X</a></li>
+                    <li><a href="https://madeinhaus.com/" target="_blank" rel="noopener noreferrer">Haus</a></li>
+                    <li><a href="https://atoll.studio/" target="_blank" rel="noopener noreferrer">Atoll</a></li>
+                    <li><a href="https://www.extract.studio/" target="_blank" rel="noopener noreferrer">Extract</a></li>
+                </ul>
+            </aside>
         </main>
 
         <section class="ascii-snake" id="ascii-snake-root" aria-label="Snake minigame" role="region">
@@ -1657,11 +1852,33 @@
         <script type="module" src="./src/main.js"></script>
         <script>
             (function () {
+                var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                var fromLoader = false;
+                try {
+                    fromLoader = sessionStorage.getItem("phikra-loader") === "done";
+                } catch (e) {}
+
+                /* Loader already played brand dots; reveal ambient chrome sooner */
+                if (reduce || fromLoader) {
+                    window.requestAnimationFrame(function () {
+                        document.body.classList.add("is-ready");
+                    });
+                } else {
+                    window.requestAnimationFrame(function () {
+                        window.requestAnimationFrame(function () {
+                            window.setTimeout(function () {
+                                document.body.classList.add("is-ready");
+                            }, 900);
+                        });
+                    });
+                }
+
                 var panels = document.querySelectorAll(".lang-showcase__panel");
                 if (!panels.length) return;
 
                 var n = panels.length;
                 var intervalMs = 6800;
+                var firstCycleMs = fromLoader ? 2200 : 4800;
                 var idx = 0;
 
                 function show(i) {
@@ -1675,14 +1892,16 @@
 
                 show(0);
 
-                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                if (reduce) {
                     return;
                 }
 
-                setInterval(function () {
-                    idx = (idx + 1) % n;
-                    show(idx);
-                }, intervalMs);
+                window.setTimeout(function () {
+                    window.setInterval(function () {
+                        idx = (idx + 1) % n;
+                        show(idx);
+                    }, intervalMs);
+                }, firstCycleMs);
             })();
         </script>
         <!-- ascii typing, background, and snake handled by ./src/main.js -->

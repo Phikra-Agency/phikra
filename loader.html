@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#272727">
+    <meta name="robots" content="noindex">
+    <title>Phikra</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="prefetch" href="./index.html">
+    <style>
+        :root {
+            --phikra-bg: #272727;
+            --phikra-red: #e50d4a;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+            --ease-sine: cubic-bezier(0.37, 0, 0.63, 1);
+            --mark-period: 4.8s;
+            --stagger: 120ms;
+        }
+
+        @property --qalam-wipe {
+            syntax: "<percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        @property --dance-y {
+            syntax: "<length-percentage>";
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: var(--phikra-bg);
+            color: var(--phikra-red);
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            transition: opacity 0.45s var(--ease-out);
+        }
+
+        body.is-exit {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 1.5rem;
+        }
+
+        .mark {
+            --mark-count: 3;
+            display: inline-flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: clamp(0.45rem, 2.2vw, 0.85rem);
+            line-height: 0;
+            color: var(--phikra-red);
+        }
+
+        .mark__petal {
+            display: block;
+            width: clamp(3.25rem, 14vw, 5.5rem);
+            height: auto;
+            aspect-ratio: 101 / 116;
+            flex: 0 0 auto;
+            transform-origin: 50% 88%;
+            will-change: transform, opacity, translate;
+            --qalam-wipe: 0%;
+            -webkit-mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            mask-image: linear-gradient(
+                135deg,
+                #000 0%,
+                #000 var(--qalam-wipe),
+                transparent var(--qalam-wipe)
+            );
+            translate: 0 var(--dance-y);
+            animation:
+                mark-thinking-handoff var(--mark-period) var(--ease-in-out) 1 both,
+                mark-thinking-bob var(--mark-period) var(--ease-sine) 1 both;
+            filter:
+                drop-shadow(0 0 12px rgba(255, 130, 170, 0.5)),
+                drop-shadow(0 0 28px rgba(229, 13, 74, 0.28));
+        }
+
+        .mark__petal:nth-child(2) {
+            animation-delay: var(--stagger);
+        }
+
+        .mark__petal:nth-child(3) {
+            animation-delay: calc(var(--stagger) * 2);
+        }
+
+        @keyframes mark-thinking-handoff {
+            0% {
+                --qalam-wipe: 0%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            14%,
+            30% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+            }
+            58% {
+                --qalam-wipe: 100%;
+                opacity: 1;
+                transform: translateX(0);
+                animation-timing-function: var(--ease-out);
+            }
+            86% {
+                --qalam-wipe: 100%;
+                opacity: 0;
+                transform: translateX(0.14em);
+            }
+            88%,
+            100% {
+                --qalam-wipe: 0%;
+                opacity: 0;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes mark-thinking-bob {
+            0%,
+            30% {
+                --dance-y: 0%;
+                animation-timing-function: var(--ease-sine);
+            }
+            33.5% {
+                --dance-y: -38%;
+            }
+            40.5% {
+                --dance-y: 12%;
+            }
+            47.5% {
+                --dance-y: -38%;
+            }
+            54.5% {
+                --dance-y: 12%;
+            }
+            58%,
+            100% {
+                --dance-y: 0%;
+            }
+        }
+
+        .skip {
+            position: fixed;
+            right: max(1rem, env(safe-area-inset-right));
+            bottom: max(1rem, env(safe-area-inset-bottom));
+            margin: 0;
+            padding: 0.45rem 0.7rem;
+            border: 1px solid rgba(232, 221, 216, 0.14);
+            border-radius: 0.4rem;
+            background: rgba(18, 18, 18, 0.45);
+            color: rgba(232, 221, 216, 0.55);
+            font: 600 0.68rem/1 "Syne", system-ui, sans-serif;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            opacity: 0;
+            animation: skip-in 0.4s var(--ease-out) 1.1s forwards;
+        }
+
+        @keyframes skip-in {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .skip:hover {
+                color: rgba(232, 221, 216, 0.88);
+                border-color: rgba(229, 13, 74, 0.28);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mark__petal {
+                animation: none;
+                opacity: 0.92;
+                transform: none;
+                translate: none;
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+
+            .skip {
+                animation: none;
+                opacity: 1;
+            }
+
+            body {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="loader" aria-label="Phikra loading">
+        <span class="mark" aria-hidden="true">
+            <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+            </svg>
+            <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+            </svg>
+            <svg class="mark__petal" viewBox="0 0 101 116" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path fill="currentColor" d="M77.02 35.61C53.29 22.15 36.29 10.31 26.02 0C8.71 38.98 0 60.78 0 65.35C0 71.36 12.38 81.45 37.18 95.63C59.83 109.09 72.79 115.81 75.98 115.81C82.35 115.81 88.36 108.36 94.01 93.52C98.27 81.1 100.38 70.69 100.38 62.17C100.38 53.65 92.62 44.45 77.01 35.62L77.02 35.61Z"/>
+            </svg>
+        </span>
+    </main>
+    <button type="button" class="skip" id="skip">Skip</button>
+    <script>
+        (function () {
+            var SITE = "./index.html";
+            var EXIT_MS = 450;
+            var CYCLE_MS = 4800;
+            var STAGGER_MS = 240;
+            var going = false;
+
+            function go() {
+                if (going) return;
+                going = true;
+                try {
+                    sessionStorage.setItem("phikra-loader", "done");
+                } catch (e) {}
+                document.body.classList.add("is-exit");
+                window.setTimeout(function () {
+                    window.location.replace(SITE);
+                }, EXIT_MS);
+            }
+
+            document.getElementById("skip").addEventListener("click", go);
+
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                window.setTimeout(go, 280);
+                return;
+            }
+
+            /* One brand cycle, then site layer. Extra stagger for last petal. */
+            window.setTimeout(go, CYCLE_MS + STAGGER_MS + 120);
+        })();
+    </script>
+</body>
+</html>
